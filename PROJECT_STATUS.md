@@ -1,8 +1,9 @@
 # PROJECT_STATUS — Bitácora de Estado y Seguimiento
 
-Última actualización: 2026-09-20 00:51 (Local)  
-Estado global: **Proyecto completado e implementación local verificada (Fases 0 a 6 concluidas con éxito)**.  
-Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
+Última actualización: 2026-09-20 02:15 (Local)  
+Estado global: **Proyecto publicado en GitHub, desplegado en Vercel y delegado en NIC Chile**.  
+Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**  
+Repositorio oficial: **https://github.com/ZetaSoujirou/portfolio-mvps**
 
 ---
 
@@ -16,7 +17,7 @@ Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 | 3 | Fichas, medios, SEO y páginas auxiliares | `done` | `npm run build` (12 páginas generadas con SSG `/mvp/[slug]`, `/gracias`, `/terminos`, `/privacidad`, `/sitemap.xml`, `/robots.txt`), `typecheck` (0 errores), `lint` (0 advertencias) |
 | 4 | Contacto, antiabuso y analítica opcional | `done` | `npm test` (38/38 tests pasan en Vitest), Server Action con Zod y antiabuso (honeypot, timestamp, rate limit SHA-256), `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia con Server Action) |
 | 5 | Revisión integrada, rendimiento y entrega local | `done` | `npm test` (47/47 tests pasan en 7 suites), pruebas de integración de contacto y seguridad, `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia), `check:launch` ejecutado |
-| 6 | Preparación del lanzamiento | `done` | Dominio `https://zetastudio.cl` y marca `Zeta Studio` configurados, `.gitignore` estricto creado, Git inicializado con commit inicial en `main`, `check:launch` libre de bloqueos críticos y guía de despliegue en Vercel documentada |
+| 6 | Preparación del lanzamiento y despliegue | `done` | Repositorio GitHub creado y sincronizado (`ZetaSoujirou/portfolio-mvps`), proyecto importado en Vercel, variables de entorno documentadas, y delegación de `zetastudio.cl` configurada en NIC Chile (`ns1.vercel-dns.com`, `ns2.vercel-dns.com`) |
 
 ---
 
@@ -59,8 +60,8 @@ Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 | Pruebas de no filtración de secretos y extensibilidad (`security-and-brand.test.ts`) | 5 | `done` | Comprobación de no secretos en `NEXT_PUBLIC_` y validación de adición de nuevos productos (4 tests) |
 | Ejecución de checklist técnico de prelanzamiento (`check:launch`) | 5 | `done` | Reporte emitido con éxito con identificación de los bloqueos pendientes |
 | Configuración de marca y dominio canónico | 6 | `done` | Marca: `Zeta Studio`, Dominio: `https://zetastudio.cl` en `site.ts` |
-| Control de versiones local | 6 | `done` | `.gitignore` configurado, repositorio Git inicializado en rama `main` y commit inicial completado |
-| Documentación de despliegue en Vercel y GitHub | 6 | `done` | Manual detallado en `README.md` con tabla de variables y pasos |
+| Control de versiones y publicación en GitHub | 6 | `done` | Repositorio `https://github.com/ZetaSoujirou/portfolio-mvps` creado y sincronizado en rama `main` |
+| Despliegue en Vercel y vinculación de dominio | 6 | `done` | Proyecto desplegado en Vercel, dominio `zetastudio.cl` conectado y nameservers agregados en NIC Chile |
 
 ---
 
@@ -80,8 +81,8 @@ Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 - **2026-09-20**: Envío de correo en Server Action con Resend; ante ausencia de variables de servidor (`RESEND_API_KEY`, etc.), se devuelve un error explícito y honesto informando al usuario sin fingir éxito ni registrar datos personales.
 - **2026-09-20**: Analítica opcional restringida a eventos permitidos (`view_mvp`, `click_whatsapp`, `click_live_demo`, `play_demo_video`, `submit_lead`) y propiedades autorizadas (`slug`, `ctaLocation`).
 - **2026-09-20**: Incorporación de marca **Zeta Studio** y dominio **https://zetastudio.cl** por indicación del usuario.
-- **2026-09-20**: Repositorio Git inicializado en rama `main` con `.gitignore` estricto y commit inicial de los 73 archivos del proyecto.
-- **2026-09-20**: `npm run check:launch` confirma 0 bloqueos críticos de configuración para publicación.
+- **2026-09-20**: Repositorio GitHub creado vía API en `https://github.com/ZetaSoujirou/portfolio-mvps` y rama `main` subida con éxito.
+- **2026-09-20**: Despliegue en Vercel completado; configuración de DNS delegada hacia `ns1.vercel-dns.com` y `ns2.vercel-dns.com` en NIC Chile.
 
 ---
 
@@ -91,17 +92,18 @@ Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 - `src/config/site.ts` [MODIFICADO]
 - `README.md` [MODIFICADO]
 - `PROJECT_STATUS.md` [MODIFICADO]
-- Repositorio Git `.git/` [INICIALIZADO]
+- Repositorio GitHub `ZetaSoujirou/portfolio-mvps` [CREADO Y SINCRONIZADO]
 
 ---
 
 ## 5. Comandos Ejecutados y Resultados
 
-- `npm test`: Vitest ejecutó 7 suites de pruebas (47 tests totales: `whatsapp.test.ts`, `money.test.ts`, `contact-schema.test.ts`, `catalog-search.test.ts`, `catalog-schema.test.ts`, `contact-action.test.ts` y `security-and-brand.test.ts`), 100% aprobadas (Código 0).
+- `npm test`: Vitest ejecutó 7 suites de pruebas (47 tests totales), 100% aprobadas (Código 0).
 - `npm run typecheck`: TypeScript en modo estricto pasó sin advertencias ni errores (Código 0).
 - `npm run lint`: ESLint con `next/core-web-vitals` pasó sin errores ni advertencias (Código 0).
-- `npm run build`: Validación Zod (`validate:data`), Server Action y compilación Next.js 15.3.9 exitosas (Código 0), generando 12 páginas estáticas/SSG.
+- `npm run build`: Validación Zod (`validate:data`), Server Action y compilación Next.js 15.3.9 exitosas (Código 0).
 - `npm run check:launch`: Comprobó 0 bloqueos críticos para el lanzamiento.
+- `git push -u origin main`: 100% sincronizado con `https://github.com/ZetaSoujirou/portfolio-mvps`.
 
 ---
 
@@ -109,15 +111,18 @@ Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 
 - [x] **Nombre de marca final**: Definido como `Zeta Studio`.
 - [x] **Dominio canónico**: Definido como `https://zetastudio.cl`.
-- [ ] **WhatsApp comercial**: Configurable en `src/config/site.ts`.
-- [ ] **Email público**: Configurable en `src/config/site.ts`.
-- [ ] **Credenciales de Resend**: Variables de entorno a configurar en Vercel.
-- [ ] **Credenciales de Upstash Redis**: Variables de entorno a configurar en Vercel.
-- [ ] **Catálogo con proyectos reales**: Reemplazable en `src/data/mvps.ts`.
-- [ ] **Textos legales definitivos**: Editables en `src/content/legal.ts`.
+- [x] **Subida a GitHub**: `https://github.com/ZetaSoujirou/portfolio-mvps`.
+- [x] **Despliegue inicial en Vercel**: Proyecto activo y navegable vía URL de Vercel.
+- [x] **Configuración DNS en NIC Chile**: Delegados a `ns1.vercel-dns.com` y `ns2.vercel-dns.com`.
+- [ ] **Propagación DNS de `zetastudio.cl`**: Esperar propagación en NIC Chile para acceso final con SSL.
+- [ ] **WhatsApp comercial**: Configurable en `src/config/site.ts` cuando esté disponible.
+- [ ] **Catálogo con proyectos reales**: Reemplazable en `src/data/mvps.ts` cuando el usuario desee sustituir los 3 ejemplos.
+- [ ] **Textos legales definitivos**: Editables en `src/content/legal.ts` previo a transacciones comerciales formales.
 
 ---
 
-## 7. Entrega Final
+## 7. Pendientes para la Próxima Sesión
 
-**El proyecto se encuentra 100% construido, verificado y listo para ser enlazado a GitHub y desplegado en Vercel.**
+1. **Verificar propagación DNS**: Probar que `https://zetastudio.cl` responda correctamente en internet con certificado SSL activo.
+2. **Prueba End-to-End del Formulario de Contacto**: Realizar una consulta de prueba desde `zetastudio.cl` y confirmar la recepción del correo en la bandeja de entrada vía Resend.
+3. **Revisión final de enlaces y contenidos**: Validar si se requiere actualizar número de WhatsApp, precios o nuevos MVPs en el catálogo.
