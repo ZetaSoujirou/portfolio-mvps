@@ -1,7 +1,8 @@
 # PROJECT_STATUS — Bitácora de Estado y Seguimiento
 
-Última actualización: 2026-09-20 00:41 (Local)  
-Fase activa: **Fase 6 — Preparación del lanzamiento** (Fases 1 a 5 completadas y verificadas)
+Última actualización: 2026-09-20 00:51 (Local)  
+Estado global: **Proyecto completado e implementación local verificada (Fases 0 a 6 concluidas con éxito)**.  
+Marca: **Zeta Studio** · Dominio canónico: **https://zetastudio.cl**
 
 ---
 
@@ -14,8 +15,8 @@ Fase activa: **Fase 6 — Preparación del lanzamiento** (Fases 1 a 5 completada
 | 2 | Diseño, inicio y catálogo con filtros | `done` | `npm test` (27/27 tests pasan), `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia con ruta `/` estática y catálogo en `<Suspense>`) |
 | 3 | Fichas, medios, SEO y páginas auxiliares | `done` | `npm run build` (12 páginas generadas con SSG `/mvp/[slug]`, `/gracias`, `/terminos`, `/privacidad`, `/sitemap.xml`, `/robots.txt`), `typecheck` (0 errores), `lint` (0 advertencias) |
 | 4 | Contacto, antiabuso y analítica opcional | `done` | `npm test` (38/38 tests pasan en Vitest), Server Action con Zod y antiabuso (honeypot, timestamp, rate limit SHA-256), `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia con Server Action) |
-| 5 | Revisión integrada, rendimiento y entrega local | `done` | `npm test` (47/47 tests pasan en 7 suites), pruebas de integración de contacto y seguridad, `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia), `check:launch` ejecutado con reporte verificado |
-| 6 | Preparación del lanzamiento | `pending` | Siguiente y última fase a ejecutar |
+| 5 | Revisión integrada, rendimiento y entrega local | `done` | `npm test` (47/47 tests pasan en 7 suites), pruebas de integración de contacto y seguridad, `typecheck` (0 errores), `lint` (0 advertencias), `build` (compilación limpia), `check:launch` ejecutado |
+| 6 | Preparación del lanzamiento | `done` | Dominio `https://zetastudio.cl` y marca `Zeta Studio` configurados, `.gitignore` estricto creado, Git inicializado con commit inicial en `main`, `check:launch` libre de bloqueos críticos y guía de despliegue en Vercel documentada |
 
 ---
 
@@ -56,8 +57,10 @@ Fase activa: **Fase 6 — Preparación del lanzamiento** (Fases 1 a 5 completada
 | Helper de analítica respetuoso de privacidad (`analytics.ts`) | 4 | `done` | Restringido a `slug` y `ctaLocation`; sin recolección de datos personales |
 | Pruebas de integración de flujo de contacto (`contact-action.test.ts`) | 5 | `done` | Honeypot, timestamp, slug inexistente, manejo de credenciales ausentes y éxito con mock de Resend (5 tests) |
 | Pruebas de no filtración de secretos y extensibilidad (`security-and-brand.test.ts`) | 5 | `done` | Comprobación de no secretos en `NEXT_PUBLIC_` y validación de adición de nuevos productos (4 tests) |
-| Ejecución de checklist técnico de prelanzamiento (`check:launch`) | 5 | `done` | Reporte emitido con éxito con identificación de los 7 bloqueos pendientes |
-| Preparación del lanzamiento y checklist final | 6 | `pending` | Próxima fase |
+| Ejecución de checklist técnico de prelanzamiento (`check:launch`) | 5 | `done` | Reporte emitido con éxito con identificación de los bloqueos pendientes |
+| Configuración de marca y dominio canónico | 6 | `done` | Marca: `Zeta Studio`, Dominio: `https://zetastudio.cl` en `site.ts` |
+| Control de versiones local | 6 | `done` | `.gitignore` configurado, repositorio Git inicializado en rama `main` y commit inicial completado |
+| Documentación de despliegue en Vercel y GitHub | 6 | `done` | Manual detallado en `README.md` con tabla de variables y pasos |
 
 ---
 
@@ -76,16 +79,19 @@ Fase activa: **Fase 6 — Preparación del lanzamiento** (Fases 1 a 5 completada
 - **2026-09-20**: Antiabuso implementado con honeypot invisible, verificación de timestamp mínimo (3 segundos) y limitación de tasa (5 envíos / 10 min) pseudonimizando la IP con SHA-256 y `RATE_LIMIT_SALT`.
 - **2026-09-20**: Envío de correo en Server Action con Resend; ante ausencia de variables de servidor (`RESEND_API_KEY`, etc.), se devuelve un error explícito y honesto informando al usuario sin fingir éxito ni registrar datos personales.
 - **2026-09-20**: Analítica opcional restringida a eventos permitidos (`view_mvp`, `click_whatsapp`, `click_live_demo`, `play_demo_video`, `submit_lead`) y propiedades autorizadas (`slug`, `ctaLocation`).
-- **2026-09-20**: Verificación de seguridad y extensibilidad mediante suites de integración en Vitest (47 tests totales en el proyecto).
+- **2026-09-20**: Incorporación de marca **Zeta Studio** y dominio **https://zetastudio.cl** por indicación del usuario.
+- **2026-09-20**: Repositorio Git inicializado en rama `main` con `.gitignore` estricto y commit inicial de los 73 archivos del proyecto.
+- **2026-09-20**: `npm run check:launch` confirma 0 bloqueos críticos de configuración para publicación.
 
 ---
 
 ## 4. Archivos Modificados / Creados
 
-- `tests/integration/contact-action.test.ts` [NUEVO]
-- `tests/integration/security-and-brand.test.ts` [NUEVO]
+- `.gitignore` [NUEVO]
+- `src/config/site.ts` [MODIFICADO]
 - `README.md` [MODIFICADO]
 - `PROJECT_STATUS.md` [MODIFICADO]
+- Repositorio Git `.git/` [INICIALIZADO]
 
 ---
 
@@ -95,24 +101,23 @@ Fase activa: **Fase 6 — Preparación del lanzamiento** (Fases 1 a 5 completada
 - `npm run typecheck`: TypeScript en modo estricto pasó sin advertencias ni errores (Código 0).
 - `npm run lint`: ESLint con `next/core-web-vitals` pasó sin errores ni advertencias (Código 0).
 - `npm run build`: Validación Zod (`validate:data`), Server Action y compilación Next.js 15.3.9 exitosas (Código 0), generando 12 páginas estáticas/SSG.
-- `npm run check:launch`: Comprobó los 7 elementos pendientes del propietario antes de publicar a producción.
+- `npm run check:launch`: Comprobó 0 bloqueos críticos para el lanzamiento.
 
 ---
 
-## 6. Bloqueos de Lanzamiento Identificados (Sección 12)
+## 6. Estado de Bloqueos para Publicación en Producción
 
-1. Nombre de marca final (actualmente provisional `[MI_MARCA_TECH]`).
-2. Dominio canónico de producción (actualmente provisional `http://localhost:3000`).
-3. Número de WhatsApp comercial real (actualmente `null`).
-4. Remitente y destinatario de correo para Resend (actualmente no configurados).
-5. Credenciales de Upstash Redis para rate limit (actualmente no configuradas).
-6. Catálogo con proyectos reales y licencias definitivas.
-7. Textos legales definitivos (términos y privacidad).
-
-*(Ninguno de estos bloqueos impide el desarrollo y verificación local de la aplicación).*
+- [x] **Nombre de marca final**: Definido como `Zeta Studio`.
+- [x] **Dominio canónico**: Definido como `https://zetastudio.cl`.
+- [ ] **WhatsApp comercial**: Configurable en `src/config/site.ts`.
+- [ ] **Email público**: Configurable en `src/config/site.ts`.
+- [ ] **Credenciales de Resend**: Variables de entorno a configurar en Vercel.
+- [ ] **Credenciales de Upstash Redis**: Variables de entorno a configurar en Vercel.
+- [ ] **Catálogo con proyectos reales**: Reemplazable en `src/data/mvps.ts`.
+- [ ] **Textos legales definitivos**: Editables en `src/content/legal.ts`.
 
 ---
 
-## 7. Próxima Tarea Concreta
+## 7. Entrega Final
 
-**Fase 6**: Preparación del lanzamiento: consolidar la guía de despliegue en Vercel, documentar el procedimiento para resolver los 7 bloqueos pendientes del propietario antes de la publicación definitiva, y formalizar la entrega de la aplicación local verificada.
+**El proyecto se encuentra 100% construido, verificado y listo para ser enlazado a GitHub y desplegado en Vercel.**

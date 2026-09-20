@@ -1,16 +1,13 @@
-# Portfolio Comercial de MVPs — `[MI_MARCA_TECH]`
+# Zeta Studio — Portfolio Comercial de MVPs
 
-> **Estado actual**: Fases 1 a 5 completadas y verificadas (Scaffold, catálogo interactivo, fichas con SSG, medios, SEO, Server Action de contacto, antiabuso, pruebas de integración de seguridad y build de producción). Siguiente: **Fase 6 (Preparación del lanzamiento)**.
-
-> [!TIP]
-> **Mensaje de reanudación para el agente:**
-> Lee `PROMPT_MAESTRO.md`, `AI_RULES.md`, `README.md` y `PROJECT_STATUS.md`. Contrasta el estado con el workspace y continúa desde la siguiente tarea pendiente sin reiniciar ni cambiar el alcance. Ejecuta las comprobaciones aplicables y actualiza el estado con evidencia real antes de terminar.
+> **Estado del proyecto**: **Implementación local verificada (Fases 0 a 6 completadas)**.  
+> Dominio canónico: `https://zetastudio.cl` · Marca: **Zeta Studio** · Idioma: `es-CL`.
 
 ---
 
 ## 1. Propósito y Límites de la v1
 
-Esta aplicación web es un **catálogo comercial de MVPs y proyectos tecnológicos de un único vendedor**, orientado a la captación de consultas comerciales y solicitudes de compra o desarrollo a medida.
+Esta aplicación web es un **catálogo comercial de MVPs y proyectos tecnológicos de un único vendedor**, orientada a la captación de consultas comerciales y solicitudes de compra o desarrollo a medida.
 
 ### Límites de la v1 (Fuera de alcance):
 - Sin carrito de compras ni pasarelas de pago integradas (el cierre comercial es asistido y fuera del sitio).
@@ -33,28 +30,51 @@ PROJECT_STATUS.md         # Bitácora de avance, evidencias y bloqueos
 src/
   app/                    # Next.js App Router (páginas y layouts)
     layout.tsx            # Layout raíz (tema oscuro, español es-CL)
-    page.tsx              # Página principal (hero, catálogo, FAQ, contacto)
+    page.tsx              # Página principal (hero, catálogo interactivo, proceso, FAQ, contacto)
     globals.css           # Estilos globales y tokens del tema oscuro
-    mvp/[slug]/page.tsx   # Ficha individual de cada MVP
-    gracias/page.tsx      # Confirmación de envío de formulario
-    terminos/page.tsx     # Borrador de términos y condiciones
-    privacidad/page.tsx   # Borrador de políticas de privacidad
+    mvp/[slug]/page.tsx   # Ficha individual de cada MVP (SSG)
+    gracias/page.tsx      # Confirmación tras consulta (noindex)
+    terminos/page.tsx     # Términos y condiciones
+    privacidad/page.tsx   # Política de privacidad
+    sitemap.ts            # Generador dinámico de sitemap.xml
+    robots.ts             # Generador de robots.txt
     not-found.tsx         # Página 404 personalizada
-    sitemap.ts            # Mapa del sitio dinámico
-    robots.ts             # Directivas de robots.txt
-  actions/                # Server Actions (envío de contacto seguro)
-  components/             # Componentes UI organizados por dominio
-  config/site.ts          # Centralización de marca, URLs y canales
-  content/                # Contenidos editables (home, FAQ, legales)
-  data/mvps.ts            # Catálogo tipado con los 3 MVPs de ejemplo
+  actions/
+    contact.ts            # Server Action para envío de consultas con antiabuso
+  components/
+    catalog/              # Catálogo, buscador con debounce, filtros en URL, tarjetas, empty state
+    contact/              # Formulario con validación Zod, honeypot, timestamp y canales directos
+    home/                 # Hero, Proceso en 3 pasos, Comparativa honesta, FAQ acordeón
+    layout/               # Header sticky con menú móvil accesible y Footer con navegación legal
+    mvp/                  # Galería con Lightbox accesible, video condicional, desglose y CTAs
+  config/
+    site.ts               # Configuración centralizada de marca, dominio y canales
+  content/
+    home.ts               # Contenidos editables de la portada y proceso
+    faq.ts                # Preguntas frecuentes comerciales y técnicas
+    legal.ts              # Borradores legales de términos y privacidad
+  data/
+    mvps.ts               # Catálogo de MVPs tipado y validado
   lib/
-    catalog/              # Esquema Zod y repositorio del catálogo
-    contact/              # Rate limit, envío por Resend y validación
-    money.ts              # Formateador de moneda USD y CLP (Intl)
-    whatsapp.ts           # Generador de enlaces seguros wa.me
-public/images/mvps/       # Portadas y galerías locales de los MVPs
-scripts/                  # Scripts de validación de datos y checklist
-tests/                    # Pruebas unitarias y de integración
+    analytics.ts          # Adaptador de analítica respetuoso de privacidad
+    money.ts              # Formato monetario internacional (USD y CLP)
+    whatsapp.ts           # Helper de enlaces wa.me con normalización a dígitos
+    catalog/
+      schema.ts           # Esquemas Zod (Price discriminado, ImageAsset, VideoDemo, MVP)
+      repository.ts       # Acceso desacoplado a los datos del catálogo
+      search.ts           # Lógica pura de búsqueda diacrítica/mayúsculas y orden
+    contact/
+      schema.ts           # Esquema Zod de contacto, honeypot y timestamp
+      rate-limit.ts       # Limitador de tasa SHA-256 (Upstash Redis / fallback local)
+      send.ts             # Integración con Resend y degradación honesta
+public/
+  images/mvps/            # 8 imágenes vectoriales originales para portadas y galerías
+scripts/
+  validate-data.ts        # Script de validación de datos contra Zod
+  check-launch.ts         # Checklist técnico de prelanzamiento
+tests/
+  unit/                   # Tests unitarios (money, search, schema, whatsapp, contact)
+  integration/            # Tests de integración (contact action con mocks, seguridad y marca)
 ```
 
 ---
@@ -73,41 +93,68 @@ tests/                    # Pruebas unitarias y de integración
 
 ---
 
-## 4. Variables de Entorno
+## 4. Comandos Verificados
 
-Copia `.env.example` a `.env.local` para desarrollo local:
+| Comando | Descripción |
+| --- | --- |
+| `npm run dev` | Inicia el servidor de desarrollo local en `http://localhost:3000`. |
+| `npm run validate:data` | Valida todos los MVPs contra el esquema Zod y comprueba imágenes locales en disco. |
+| `npm test` | Ejecuta la suite completa de 47 pruebas en Vitest (7 suites: unitarias e integración). |
+| `npm run typecheck` | Comprueba tipos en TypeScript estricto (`tsc --noEmit`). |
+| `npm run lint` | Ejecuta ESLint con la configuración oficial `next/core-web-vitals`. |
+| `npm run build` | Valida datos y compila la versión de producción generando las 12 páginas estáticas/SSG. |
+| `npm run start` | Inicia el servidor de producción local de Next.js. |
+| `npm run check:launch` | Ejecuta la auditoría de prelanzamiento y estado de bloqueos. |
 
-| Variable | Tipo | Descripción |
+---
+
+## 5. Guía de Despliegue: GitHub y Vercel
+
+### Paso 1: Subir el repositorio a GitHub
+
+El proyecto ya está inicializado con Git en la rama `main` y con un commit inicial que incluye todos los archivos excepto los temporales e ignorados (`node_modules`, `.next`).
+
+1. Crea un nuevo repositorio vacío en tu cuenta de GitHub (por ejemplo, `portfolio-mvps` o `zetastudio-portfolio`).
+2. En tu terminal, dentro de la carpeta del proyecto, ejecuta:
+   ```bash
+   git remote add origin https://github.com/TU_USUARIO/TU_REPOSITORIO.git
+   git push -u origin main
+   ```
+
+### Paso 2: Conectar con Vercel
+
+1. Ingresa a [Vercel](https://vercel.com) e inicia sesión con tu cuenta de GitHub.
+2. Haz clic en **Add New... > Project** e importa el repositorio que acabas de subir.
+3. En la configuración del proyecto:
+   - **Framework Preset**: `Next.js` (detectado automáticamente).
+   - **Root Directory**: `./`
+4. Configura las variables de entorno en la sección **Environment Variables**:
+
+| Variable | Alcance | Valor para Producción |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Público | URL canónica del sitio (ej. `http://localhost:3000`) |
-| `RESEND_API_KEY` | Servidor | API Key de Resend para envío de correos |
-| `RESEND_FROM_EMAIL` | Servidor | Remitente verificado en Resend |
-| `CONTACT_EMAIL_TO` | Servidor | Buzón de destino para consultas recibidas |
-| `UPSTASH_REDIS_REST_URL` | Servidor | Endpoint REST de Upstash Redis para rate limit |
-| `UPSTASH_REDIS_REST_TOKEN` | Servidor | Token de Upstash Redis |
-| `RATE_LIMIT_SALT` | Servidor | Semilla para pseudonimizar IPs en rate limit |
-| `NEXT_PUBLIC_ANALYTICS_ENABLED` | Público | `false` por defecto en desarrollo |
+| `NEXT_PUBLIC_SITE_URL` | Público | `https://zetastudio.cl` |
+| `RESEND_API_KEY` | Servidor | Clave API de tu cuenta en Resend (`re_...`) |
+| `RESEND_FROM_EMAIL` | Servidor | Remitente verificado (ej. `contacto@zetastudio.cl`) |
+| `CONTACT_EMAIL_TO` | Servidor | Tu buzón de recepción (ej. `tu-correo@zetastudio.cl`) |
+| `UPSTASH_REDIS_REST_URL` | Servidor | URL de tu base de datos Upstash Redis REST |
+| `UPSTASH_REDIS_REST_TOKEN` | Servidor | Token de tu base de datos Upstash Redis REST |
+| `RATE_LIMIT_SALT` | Servidor | Cadena aleatoria secreta para pseudonimizar IPs |
+| `NEXT_PUBLIC_ANALYTICS_ENABLED` | Público | `false` (o `true` si activas Vercel Analytics) |
 
-> [!WARNING]
-> Nunca uses el prefijo `NEXT_PUBLIC_` para secretos o claves de API de backend.
-
----
-
-## 5. Scripts Disponibles
-
-- `npm run dev`: Inicia el servidor de desarrollo local.
-- `npm run lint`: Ejecuta ESLint de manera estricta.
-- `npm run typecheck`: Ejecuta `tsc --noEmit` para verificar tipos.
-- `npm run test`: Ejecuta la suite de pruebas unitarias con Vitest.
-- `npm run validate:data`: Valida que todos los productos en `src/data/mvps.ts` cumplan el esquema Zod.
-- `npm run build`: Valida los datos y compila el bundle de producción de Next.js.
-- `npm run start`: Inicia el servidor en modo producción.
-- `npm run check:launch`: Comprobación técnica de prerrequisitos de lanzamiento.
-- `npm run test:e2e`: Ejecuta las pruebas E2E con Playwright.
+5. Haz clic en **Deploy**.
+6. Una vez desplegado, ve a **Settings > Domains** en Vercel y añade tu dominio `zetastudio.cl` siguiendo las instrucciones de DNS que te indique Vercel.
 
 ---
 
-## 6. Gestión del Catálogo y Configuración
+## 6. Checklist de Prelanzamiento del Propietario
 
-- **Modificar Marca o Contactos**: Edita `src/config/site.ts`. Los valores no configurados deben mantenerse en `null` para desactivar de forma elegante el canal correspondiente.
-- **Añadir o Modificar MVPs**: Edita `src/data/mvps.ts`. Todos los elementos deben satisfacer `mvpSchema` en `src/lib/catalog/schema.ts`. Ejecuta `npm run validate:data` para asegurar la integridad de los datos.
+Antes de promocionar públicamente la web, revisa los siguientes puntos:
+
+- [x] **Nombre de marca**: Definido como `Zeta Studio`.
+- [x] **Dominio canónico**: Definido como `https://zetastudio.cl`.
+- [ ] **WhatsApp comercial**: Configurar el número internacional en `src/config/site.ts` (`whatsappNumber: "+569..."`).
+- [ ] **Email público**: Configurar correo de contacto en `src/config/site.ts` (`publicEmail: "contacto@zetastudio.cl"`).
+- [ ] **Credenciales de Resend**: Configurar variables de servidor en Vercel.
+- [ ] **Credenciales de Upstash Redis**: Configurar variables de servidor en Vercel.
+- [ ] **Catálogo definitivo**: Reemplazar los 3 proyectos de ejemplo por proyectos reales en `src/data/mvps.ts` cuando estén listos.
+- [ ] **Revisión legal**: Ajustar términos y privacidad en `src/content/legal.ts` con tus datos fiscales/comerciales definitivos.
